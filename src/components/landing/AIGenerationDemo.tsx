@@ -6,25 +6,25 @@ const demos = [
   {
     icon: <Brain size={32} />,
     title: 'Memory Match',
-    description: 'Uji memori visualmu',
+    description: 'Test your visual memory',
     gradient: 'from-purple-500 to-pink-500',
   },
   {
     icon: <Calculator size={32} />,
     title: 'Math Quiz',
-    description: 'Latih kemampuan matematika',
+    description: 'Practice your math skills',
     gradient: 'from-blue-500 to-cyan-500',
   },
   {
     icon: <Grid3x3 size={32} />,
     title: 'Pattern Match',
-    description: 'Temukan pola yang hilang',
+    description: 'Find the missing pattern',
     gradient: 'from-green-500 to-emerald-500',
   },
   {
     icon: <Type size={32} />,
     title: 'Word Puzzle',
-    description: 'Susun kata dengan cepat',
+    description: 'Unscramble words quickly',
     gradient: 'from-orange-500 to-red-500',
   }
 ];
@@ -103,10 +103,10 @@ const MathQuiz = () => {
   const checkAnswer = () => {
     if (parseInt(userAnswer) === question.answer) {
       setScore(score + 10);
-      setFeedback('✅ Benar!');
+      setFeedback('✅ Correct!');
       setTimeout(generateQuestion, 1000);
     } else {
-      setFeedback('❌ Coba lagi!');
+      setFeedback('❌ Try again!');
     }
   };
 
@@ -161,7 +161,7 @@ const PatternMatch = () => {
 
   const checkAnswer = (answer: string) => {
     setScore(score + 10);
-    setFeedback('✅ Bagus!');
+    setFeedback('✅ Great!');
     setTimeout(generatePattern, 1000);
   };
 
@@ -175,7 +175,7 @@ const PatternMatch = () => {
           </div>
         ))}
       </div>
-      <div className="text-lg">Pilih bentuk yang tepat:</div>
+      <div className="text-lg">Choose the correct shape:</div>
       <div className="flex gap-4 justify-center">
         {options.map((option, i) => (
           <button
@@ -218,17 +218,17 @@ const WordPuzzle = () => {
   const checkAnswer = () => {
     if (userAnswer.toUpperCase() === word) {
       setScore(score + 10);
-      setFeedback('✅ Benar!');
+      setFeedback('✅ Correct!');
       setTimeout(generateWord, 1000);
     } else {
-      setFeedback('❌ Coba lagi!');
+      setFeedback('❌ Try again!');
     }
   };
 
   return (
     <div className="space-y-6 text-center">
       <div className="text-2xl font-bold">Score: {score}</div>
-      <div className="text-lg">Susun huruf ini menjadi kata yang benar:</div>
+      <div className="text-lg">Unscramble these letters to form a word:</div>
       <div className="text-4xl font-bold tracking-widest">{scrambled}</div>
       <div className="flex gap-4 justify-center items-center">
         <input
@@ -268,10 +268,10 @@ export const AIGenerationDemo = () => {
       <div className="text-center mb-12">
         <div className="inline-flex items-center gap-2 mb-4">
           <Sparkles className="text-primary" size={24} />
-          <h2 className="text-3xl font-bold">Permainan Asah Otak</h2>
+          <h2 className="text-3xl font-bold">Brain Training Games</h2>
         </div>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Latih otakmu dengan berbagai permainan sederhana yang menyenangkan
+          Train your brain with fun and simple games
         </p>
       </div>
 
