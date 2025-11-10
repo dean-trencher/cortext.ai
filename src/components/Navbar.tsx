@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Brain, LogIn, Search, Upload, User, Settings, LogOut, Moon, Sun, Table, Info, HelpCircle, Code } from 'lucide-react';
+import { LogIn, Search, Upload, User, Settings, LogOut, Moon, Sun, Table, Info, HelpCircle, Code, Github } from 'lucide-react';
+import { WalletConnect } from '@/components/WalletConnect';
+import cortexLogo from '@/assets/cortext-logo.png';
 import { useRippleEffect } from '@/lib/animations';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -156,26 +158,29 @@ export const Navbar = () => {
       <TooltipProvider>
         <header className="glass-panel fixed top-6 left-1/2 transform -translate-x-1/2 z-40 rounded-lg px-1 py-1">
           <nav className="flex items-center">
-            {/* Cortex with submenu */}
-            <NavItem
-              to="#"
-              icon={<Brain size={20} />}
-              label="Cortex"
-              active={['what', 'why', 'how'].includes(active)}
-              onClick={() => {}}
-              hasSubmenu={true}
-            >
-              {cortexSubmenu.map((item) => (
-                <SubMenuItem
-                  key={item.id}
-                  to={item.to}
-                  icon={item.icon}
-                  label={item.label}
-                  active={active === item.id}
-                  onClick={() => handleNavItemClick(item.id)}
-                />
-              ))}
-            </NavItem>
+            {/* Logo and Cortext with submenu */}
+            <div className="flex items-center gap-2 mr-2">
+              <img src={cortexLogo} alt="Cortext.ai" className="w-8 h-8" />
+              <NavItem
+                to="#"
+                icon={null}
+                label="Cortext.ai"
+                active={['what', 'why', 'how'].includes(active)}
+                onClick={() => {}}
+                hasSubmenu={true}
+              >
+                {cortexSubmenu.map((item) => (
+                  <SubMenuItem
+                    key={item.id}
+                    to={item.to}
+                    icon={item.icon}
+                    label={item.label}
+                    active={active === item.id}
+                    onClick={() => handleNavItemClick(item.id)}
+                  />
+                ))}
+              </NavItem>
+            </div>
             
             {/* Other nav items */}
             {navItems.map((item) => (
@@ -189,6 +194,28 @@ export const Navbar = () => {
               />
             ))}
             
+            {/* GitHub Link */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <a
+                  href="https://github.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center px-4 py-3 rounded-lg hover:bg-primary/10 hover:text-primary transition-all duration-300"
+                >
+                  <Github size={20} />
+                </a>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>GitHub</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Wallet Connect */}
+            <div className="ml-2">
+              <WalletConnect />
+            </div>
+
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button

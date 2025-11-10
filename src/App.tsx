@@ -16,7 +16,9 @@ import Import from "./pages/Import";
 import SearchPage from "./pages/SearchPage";
 import Settings from "./pages/Settings";
 import ManagePage from "./pages/ManagePage";
+import EditConfig from "./pages/EditConfig";
 import Navbar from "./components/Navbar";
+import { CryptoTicker } from "./components/CryptoTicker";
 
 const queryClient = new QueryClient();
 
@@ -103,6 +105,14 @@ const AppRoutes = () => {
         } 
       />
       <Route 
+        path="/edit" 
+        element={
+          <PageTransition>
+            <EditConfig />
+          </PageTransition>
+        } 
+      />
+      <Route 
         path="*" 
         element={
           <PageTransition>
@@ -123,6 +133,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <div className="min-h-screen">
+              <CryptoTicker />
               <Navbar />
               <AppRoutes />
             </div>
