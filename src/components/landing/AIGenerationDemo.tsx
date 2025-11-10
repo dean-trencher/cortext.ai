@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Sparkles, Brain, Calculator, Grid3x3, Type } from 'lucide-react';
+import { Sparkles, Brain, Calculator, Grid3x3, Type, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+
+declare global {
+  interface Window {
+    solana?: {
+      isPhantom?: boolean;
+      connect: () => Promise<{ publicKey: { toString: () => string } }>;
+      disconnect: () => Promise<void>;
+      publicKey?: { toString: () => string };
+    };
+  }
+}
 
 const demos = [
   {
@@ -247,6 +259,63 @@ const WordPuzzle = () => {
 
 export const AIGenerationDemo = () => {
   const [activeDemo, setActiveDemo] = useState(0);
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    checkWalletConnection();
+  }, []);
+
+  const checkWalletConnection = () => {
+    const { solana } = window;
+    if (solana?.publicKey) {
+      setIsWalletConnected(true);
+    } else {
+      setIsWalletConnected(false);
+    }
+  };
+
+  const handleConnectWallet = async () => {
+    const { solana } = window;
+
+    if (!solana) {
+      toast({
+        title: "Phantom Wallet Not Found",
+        description: "Please install Phantom wallet to play games",
+        variant: "destructive",
+      });
+      window.open('https://phantom.app/', '_blank');
+      return;
+    }
+
+    try {
+      await solana.connect();
+      setIsWalletConnected(true);
+      toast({
+        title: "Wallet Connected",
+        description: "You can now play the games!",
+      });
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
+      toast({
+        title: "Connection Failed",
+        description: "Failed to connect wallet",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleGameSelect = (index: number) => {
+    if (!isWalletConnected) {
+      toast({
+        title: "Wallet Required",
+        description: "Please connect your wallet to play games",
+        variant: "destructive",
+      });
+      return;
+    }
+    setActiveDemo(index);
+  };
 
   const renderGame = () => {
     switch (activeDemo) {
@@ -279,10 +348,10 @@ export const AIGenerationDemo = () => {
         {demos.map((demo, index) => (
           <div
             key={index}
-            onClick={() => setActiveDemo(index)}
+            onClick={() => handleGameSelect(index)}
             className={`glass-panel p-6 rounded-xl cursor-pointer transition-all duration-300 hover:scale-105 ${
-              activeDemo === index ? 'ring-2 ring-primary' : ''
-            }`}
+              activeDemo === index && isWalletConnected ? 'ring-2 ring-primary' : ''
+            } ${!isWalletConnected ? 'opacity-60' : ''}`}
           >
             <div className={`inline-flex p-3 rounded-lg bg-gradient-to-br ${demo.gradient} text-white mb-4`}>
               {demo.icon}
@@ -294,7 +363,23 @@ export const AIGenerationDemo = () => {
       </div>
 
       <div className="glass-panel rounded-2xl p-8 min-h-[400px] flex items-center justify-center">
-        {renderGame()}
+        {!isWalletConnected ? (
+          <div className="text-center space-y-6">
+            <Wallet size={64} className="mx-auto text-muted-foreground" />
+            <div>
+              <h3 className="text-2xl font-bold mb-2">Connect Your Wallet</h3>
+              <p className="text-muted-foreground mb-6">
+                Connect your Phantom wallet to start playing brain training games
+              </p>
+              <Button onClick={handleConnectWallet} size="lg" className="gap-2">
+                <Wallet size={20} />
+                Connect Wallet
+              </Button>
+            </div>
+          </div>
+        ) : (
+          renderGame()
+        )}
       </div>
     </div>
   );
