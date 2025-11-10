@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LogIn, Search, Upload, User, Settings, LogOut, Moon, Sun, Table, Info, HelpCircle, Code, Github } from 'lucide-react';
 import { WalletConnect } from '@/components/WalletConnect';
@@ -19,6 +19,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { supabase } from '@/integrations/supabase/client';
 
 interface NavItemProps {
   to: string;
@@ -122,8 +123,41 @@ const SubMenuItem = ({ to, icon, label, active, onClick }: NavItemProps) => {
 export const Navbar = () => {
   const [active, setActive] = useState('what');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [hasTicker, setHasTicker] = useState(false);
   const { isAuthenticated, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+
+  useEffect(() => {
+    checkTickerConfig();
+    
+    const channel = supabase
+      .channel('navbar-ticker-check')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'crypto_config'
+        },
+        () => {
+          checkTickerConfig();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const checkTickerConfig = async () => {
+    const { data } = await supabase
+      .from('crypto_config')
+      .select('contract_address')
+      .single();
+    
+    setHasTicker(!!data?.contract_address);
+  };
   
   const handleOpenAuthModal = () => {
     setIsAuthModalOpen(true);
@@ -156,7 +190,10 @@ export const Navbar = () => {
   return (
     <>
       <TooltipProvider>
-        <header className="glass-panel fixed top-6 left-1/2 transform -translate-x-1/2 z-40 rounded-lg px-1 py-1">
+        <header className={cn(
+          "glass-panel fixed left-1/2 transform -translate-x-1/2 z-40 rounded-lg px-1 py-1 transition-all duration-300",
+          hasTicker ? "top-16" : "top-6"
+        )}>
           <nav className="flex items-center">
             {/* Logo and Cortext with submenu */}
             <div className="flex items-center gap-2 mr-2">
