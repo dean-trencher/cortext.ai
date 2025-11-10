@@ -9,6 +9,7 @@ export const AIGeneratorCard = () => {
   const [prompt, setPrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
   const { toast } = useToast();
 
   const handleGenerate = async () => {
@@ -32,6 +33,7 @@ export const AIGeneratorCard = () => {
       if (error) throw error;
 
       setResult(data.content);
+      setIsExpanded(false);
       toast({
         title: "Success",
         description: "Content generated successfully",
@@ -84,7 +86,21 @@ export const AIGeneratorCard = () => {
         {result && (
           <div className="mt-6 p-6 bg-muted/50 rounded-lg">
             <h4 className="font-semibold mb-3">Generated Content:</h4>
-            <p className="whitespace-pre-wrap">{result}</p>
+            <div className="relative">
+              <p className={`whitespace-pre-wrap ${!isExpanded && result.length > 300 ? 'line-clamp-4' : ''}`}>
+                {result}
+              </p>
+              {result.length > 300 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="mt-2"
+                >
+                  {isExpanded ? 'Read Less' : 'Read More'}
+                </Button>
+              )}
+            </div>
           </div>
         )}
       </div>
