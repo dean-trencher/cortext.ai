@@ -235,7 +235,7 @@ export const Navbar = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <a
-                  href="https://github.com"
+                  href="https://github.com/dean-trencher/cortext.ai"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center px-4 py-3 rounded-lg hover:bg-primary/10 hover:text-primary transition-all duration-300"
